@@ -50,16 +50,23 @@ and then
 `mul_eq_of_eq_inv_mul : b = a⁻¹ * c → a * b = c`
 
 first.
-
+eigthfold.ai/events/candidate?plannedEventId=QDyLmZ1l
 -/
 
-theorem mul_left_cancel (h : a * b = a * c) : b = c := by sorry
+theorem mul_left_cancel (h : a * b = a * c) : b = c := by
+  rw[← one_mul b, ← inv_mul_self a, mul_assoc a⁻¹ a b, h, ← mul_assoc a⁻¹ a c, inv_mul_self a, one_mul c]
 
-theorem mul_eq_of_eq_inv_mul (h : b = a⁻¹ * c) : a * b = c := by sorry
+theorem mul_eq_of_eq_inv_mul (h : b = a⁻¹ * c) : a * b = c := by
+  apply mul_left_cancel a⁻¹
+  rw [← h, ← mul_assoc, inv_mul_self, one_mul]
 
-theorem mul_one (a : G) : a * 1 = a := by sorry
+theorem mul_one (a : G) : a * 1 = a := by
+  apply mul_eq_of_eq_inv_mul
+  rw [inv_mul_self]
 
-theorem mul_inv_self (a : G) : a * a⁻¹ = 1 := by sorry
+theorem mul_inv_self (a : G) : a * a⁻¹ = 1 := by
+  apply mul_eq_of_eq_inv_mul
+  rw [mul_one]
 
 end WeakGroup
 

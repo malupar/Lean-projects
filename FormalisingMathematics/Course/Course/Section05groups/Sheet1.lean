@@ -51,18 +51,18 @@ example (g : G) : g⁻¹ * g = 1 :=
 -- with the name of the axiom it found. Note also that you can instead *guess*
 -- the names of the axioms. For example what do you think the proof of `1 * a = a` is called?
 example (a b c : G) : a * b * c = a * (b * c) := by
-  sorry
+  exact mul_assoc a b c
 
 -- can be found with `library_search` if you didn't know the answer already
 example (a : G) : a * 1 = a := by
-  sorry
+  exact MulOneClass.mul_one a
 
 -- Can you guess the last two?
 example (a : G) : 1 * a = a := by
-  sorry
+  exact MulOneClass.one_mul a
 
 example (a : G) : a * a⁻¹ = 1 := by
-  sorry
+  exact mul_inv_cancel a
 
 -- As well as the axioms, Lean has many other standard facts which are true
 -- in all groups. See if you can prove these from the axioms, or find them
@@ -71,26 +71,30 @@ example (a : G) : a * a⁻¹ = 1 := by
 variable (a b c : G)
 
 example : a⁻¹ * (a * b) = b := by
-  sorry
+  rw [← mul_assoc a ⁻¹ a b, inv_mul_cancel a, MulOneClass.one_mul]
 
 example : a * (a⁻¹ * b) = b := by
-  sorry
+  rw [← mul_assoc a a⁻¹ b, mul_inv_cancel a, MulOneClass.one_mul]
 
 example {a b c : G} (h1 : b * a = 1) (h2 : a * c = 1) : b = c := by
   -- hint for this one if you're doing it from first principles: `b * (a * c) = (b * a) * c`
-  sorry
+  rw [← MulOneClass.mul_one b, ← h2, ← MulOneClass.one_mul c, ← mul_assoc a 1 c, MulOneClass.mul_one, ← h1, mul_assoc b a c]
 
 example : a * b = 1 ↔ a⁻¹ = b := by
-  sorry
+  constructor
+  · intro h
+    rw [← MulOneClass.one_mul b, ← inv_mul_cancel a, mul_assoc a⁻¹ a b, h, MulOneClass.mul_one]
+  · intro h
+    rw [← h, mul_inv_cancel a]
 
 example : (1 : G)⁻¹ = 1 := by
-  sorry
+  rw [← MulOneClass.one_mul 1⁻¹, mul_inv_cancel 1]
 
 example : a⁻¹⁻¹ = a := by
-  sorry
+  rw [← MulOneClass.one_mul a⁻¹⁻¹, ← mul_inv_cancel a, mul_assoc a a⁻¹ a⁻¹⁻¹, mul_inv_cancel a⁻¹, MulOneClass.mul_one a]
 
 example : (a * b)⁻¹ = b⁻¹ * a⁻¹ := by
-  sorry
+  rw [← MulOneClass.one_mul b⁻¹, ← inv_mul_cancel (a*b), mul_assoc (a * b)⁻¹ (a * b), mul_assoc a b, mul_inv_cancel, MulOneClass.mul_one, mul_assoc, mul_inv_cancel, MulOneClass.mul_one]
 
 /-
 

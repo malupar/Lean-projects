@@ -51,9 +51,14 @@ example : f '' (f ⁻¹' T) ⊆ T := by
 example : f '' S ⊆ T ↔ S ⊆ f ⁻¹' T := by
   constructor
   · rintro hS x hx
-    refine
-    sorry
-  · sorry
+    have hF: f x ∈ T := by apply hS; exact Set.mem_image_of_mem f hx
+    apply hF
+  · rintro hS y hy
+    have hF: f '' S ⊆ f '' (f ⁻¹' T) := by exact Set.image_mono hS
+    specialize hF hy
+    have h2: f '' (f ⁻¹' T) ⊆ T := by rintro _ ⟨x, hx, rfl⟩; exact hx
+    specialize h2 hF
+    exact h2
 
 -- Pushforward and pullback along the identity map don't change anything
 -- pullback is not so hard
@@ -62,13 +67,23 @@ example : id ⁻¹' S = S := by rfl
 -- pushforward is a little trickier. You might have to `ext x, split`.
 example : id '' S = S := by
   ext x
-  sorry
+  constructor
+  · rintro ⟨y, hyS, rfl⟩
+    exact hyS
+  · exact fun a ↦ Set.mem_image_of_mem id a
 
 -- Now let's try composition.
 variable (Z : Type) (g : Y → Z) (U : Set Z)
 
 -- preimage of preimage is preimage of comp
-example : g ∘ f ⁻¹' U = f ⁻¹' (g ⁻¹' U) := by sorry
+example : g ∘ f ⁻¹' U = f ⁻¹' (g ⁻¹' U) := by rfl
 
 -- preimage of preimage is preimage of comp
-example : g ∘ f '' S = g '' (f '' S) := by sorry
+example : g ∘ f '' S = g '' (f '' S) := by
+  ext x
+  constructor
+  · rintro ⟨x, hxS, rfl⟩
+    refine' ⟨f x, _, rfl⟩
+    exact Set.mem_image_of_mem f hxS
+  · rintro ⟨x, ⟨y, hY, rfl⟩, rfl⟩
+    exact Set.mem_image_of_mem (g ∘ f) hY
